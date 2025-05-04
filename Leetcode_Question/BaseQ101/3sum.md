@@ -1,0 +1,77 @@
+## Link
+[3Sum - LeetCode](https://leetcode.com/problems/3sum/description/)- medium
+## Question
+
+>Given an integer array nums, return all the triplets `[nums[i], nums[j], nums[k]]` such that `i != j`, `i != k`, and `j != k`, and `nums[i] + nums[j] + nums[k] == 0`.
+>Notice that the solution set must not contain duplicate triplets.
+>
+>**Example 1:**
+> **Input:** nums = `[-1,0,1,2,-1,-4]`
+> **Output:** `[[-1,-1,2],[-1,0,1]]`
+> **Explanation:** 
+> 	nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0.
+> 	nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0.
+> 	nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0.
+> 	The distinct triplets are [-1,0,1] and [-1,-1,2].
+> 	Notice that the order of the output and the order of the triplets does not matter.
+## Goal:
+- Identify all combinations of three numbers in the array that add up to zero.
+## Logic
+Fix the first number, and find two orders that sum to its negative using two pointers on a sorted array.
+1. Sort the input array (two pointer technique only can work in a sorted array) 
+2. Iterate index i, skip the duplicate number, use negative `i` as target
+3. Define `two_pair_sum` function
+	1. initialize two pointer
+	2. move two pointer *inward* to find pairs whose sum equals the target
+	3. skip duplicate value
+	4. combine valide pair
+
+## Code:
+```python
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        nums.sort() # O(nlogn)
+        result = []
+        for i in range(len(nums) - 2):
+            if i > 0 and nums[i] == nums[i - 1]:
+                continue
+            
+            pairs = self.two_pair_sum(nums, i + 1, -nums[i])
+            for pair in pairs:
+                result.append([nums[i]] + pair)
+        return result
+    
+    def two_pair_sum(self, nums: List[int], start: int, target: int) -> List[List[int]]:
+        pair = []
+        left = start
+        right = len(nums) - 1
+        while left < right:
+            total = nums[left] + nums[right]
+            if total == target:
+                pair.append([nums[left], nums[right]])
+                left += 1
+                right -= 1
+                while left < right and nums[left] == nums[left - 1]:
+                    left += 1
+                while left < right and nums[right] == nums[right + 1]:
+                    right -= 1
+            elif total < target:
+                left += 1
+            else:
+                right -= 1                
+        
+        return pair
+```
+
+## Complexity analysis
+Time Complexity: $O(n^2)$ 
+- `nums.sort()`Sorting: complexity is $O(nlogn)$
+- n elements has n pair, which is $O(n^2)$
+Space Complexity: 
+
+## Sample: 
+
+
+## Pre-knowledge
+- Two pointers
+
